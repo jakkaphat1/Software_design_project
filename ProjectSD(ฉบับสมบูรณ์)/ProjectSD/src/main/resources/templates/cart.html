@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- รองรับการแสดงผลบนโทรศัพท์ -->
+    <title>ตะกร้าสินค้า</title>
+    <!-- เชื่อมต่อกับ Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-3">
+        <h1>ตะกร้าสินค้า</h1>
+    </header>
+
+    <main class="container mt-4">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ชื่ออาหาร</th>
+                        <th>จำนวน</th>
+                        <th>ราคา</th>
+                        <th>รวม</th>
+                        <th>การจัดการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- ตรวจสอบว่าตะกร้าสินค้ามีของอยู่หรือไม่ -->
+                    <tr th:if="${#lists.isEmpty(cartItems)}">
+                        <td colspan="5" class="text-center">ไม่พบของในตะกร้า</td>
+                    </tr>
+                    <!-- แสดงรายการอาหารในตะกร้า -->
+                    <tr th:each="cartItem : ${cartItems}">
+                        <td th:text="${cartItem.menu.name}"></td>
+                        <td th:text="${cartItem.quantity}"></td>
+                        <td th:text="${cartItem.menu.price}"></td>
+                        <td th:text="${cartItem.menu.price * cartItem.quantity}"></td>
+                        <td>
+                            <!-- ปุ่มลบรายการอาหาร -->
+                            <form th:action="@{/cart/remove}" method="post" style="display:inline;">
+                                <input type="hidden" name="menuId" th:value="${cartItem.menu.menuId}"/>
+                                <button type="submit" class="btn btn-danger btn-sm">ลบ</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center mt-4">
+            <!-- ถ้าไม่มีสินค้าในตะกร้า ให้ปิดการทำงานปุ่มยืนยันคำสั่งซื้อ -->
+            <form th:action="@{/order/confirm}" method="post" th:if="${!#lists.isEmpty(cartItems)}" class="d-inline">
+                <button type="submit" class="btn btn-success">ยืนยันคำสั่งซื้อ</button>
+            </form>
+            <a th:href="@{'/user/menu/table/' + ${tableNumber}}" class="btn btn-secondary">กลับไปที่เมนู</a>
+        </div>
+    </main>
+
+    <footer class="bg-light text-center py-3">
+    </footer>
+
+    <!-- เพิ่มการเชื่อมต่อกับ Bootstrap JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

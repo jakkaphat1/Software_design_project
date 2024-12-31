@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>จัดการอาหาร (Admin)</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .button-delete, .button-edit {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            cursor: pointer;
+            border-radius: 5px; /* ขอบมน */
+            margin-right: 5px; /* ระยะห่างระหว่างปุ่ม */
+        }
+        
+        .button-delete:hover, .button-edit:hover {
+            background-color: #c82333;
+        }
+
+        .button-edit {
+            background-color: #007bff;
+        }
+
+        .button-edit:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <header class="mb-4">
+            <h1>จัดการอาหาร (Admin)</h1>
+            <nav>
+                <a href="/admin/menu/add" class="btn btn-primary">เพิ่มอาหารใหม่</a>
+            </nav>
+        </header>
+
+        <main>
+            <h2>รายการอาหารที่เพิ่ม</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ชื่ออาหาร</th>
+                        <th>รายละเอียด</th>
+                        <th>หมวดหมู่</th>
+                        <th>ราคา</th>
+                        <th>การจัดการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="menu : ${menus}">
+                        <td th:text="${menu.name}">ชื่ออาหาร</td>
+                        <td th:text="${menu.description}">รายละเอียด</td>
+                        <td th:text="${menu.category}">หมวดหมู่</td>
+                        <td th:text="${menu.price}">ราคา</td>
+                        <td>
+                            <!-- ปุ่มแก้ไข -->
+                            <a th:href="@{/admin/menu/edit/{id}(id=${menu.menuId})}" class="button-edit btn">แก้ไข</a>
+                            <!-- ฟอร์มลบ -->
+                            <form th:action="@{/admin/menu/delete/{id}(id=${menu.menuId})}" method="post" style="display:inline;">
+                                <button type="submit" class="button-delete btn">ลบ</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <a href="/admin-page" class="btn btn-secondary btn-block mt-3">กลับไปที่หน้าแอดมิน</a>
+        </main>
+
+        <footer class="text-center mt-4">
+            <p>&copy; 2024 ร้านอาหารของเรา</p>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

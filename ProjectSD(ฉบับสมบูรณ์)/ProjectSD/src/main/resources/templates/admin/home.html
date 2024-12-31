@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>หน้าแรกของผู้ดูแลระบบ (Admin)</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>หน้าแรกของผู้ดูแลระบบ (Admin)</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2>การจัดการอาหาร</h2>
+            <nav>
+                <a href="/admin/menu">ดูรายการอาหาร</a>
+                <a href="/admin/menu/add">เพิ่มอาหารใหม่</a>
+            </nav>
+        </section>
+
+        <section>
+            <h2>การแจ้งเตือนคำสั่งซื้อใหม่</h2>
+            <div th:if="${newOrder}">
+                <p>มีคำสั่งซื้อใหม่เข้ามา!</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 ร้านอาหารของเรา</p>
+    </footer>
+</body>
+</html>

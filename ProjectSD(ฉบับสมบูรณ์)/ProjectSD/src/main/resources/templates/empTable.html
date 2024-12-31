@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>จัดการโต๊ะ (Employee)</title>
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        nav a {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Grid layout for the tables */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            justify-items: center; /* Center items horizontally */
+            align-items: center; /* Center items vertically */
+            max-width: 800px; /* Set a maximum width for the grid */
+            margin: 0 auto; /* Center the grid in the page */
+        }
+
+        .grid-item {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 100%; /* Make grid items full width */
+        }
+
+        .button-56 {
+            align-items: center;
+            background-color: #fee6e3;
+            border: 2px solid #111;
+            border-radius: 8px;
+            box-sizing: border-box;
+            color: #111;
+            cursor: pointer;
+            display: flex;
+            font-family: Inter, sans-serif;
+            font-size: 16px;
+            height: 48px;
+            justify-content: center;
+            line-height: 24px;
+            max-width: 100%;
+            padding: 0 25px;
+            position: relative;
+            text-align: center;
+            text-decoration: none;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .button-56:after {
+            background-color: #111;
+            border-radius: 8px;
+            content: "";
+            display: block;
+            height: 48px;
+            left: 0;
+            width: 100%;
+            position: absolute;
+            top: -2px;
+            transform: translate(8px, 8px);
+            transition: transform .2s ease-out;
+            z-index: -1;
+        }
+
+        .button-56:hover:after {
+            transform: translate(0, 0);
+        }
+
+        .button-56:active {
+            background-color: #ffdeda;
+            outline: 0;
+        }
+
+        .button-56:hover {
+            outline: 0;
+        }
+
+        @media (min-width: 768px) {
+            .button-56 {
+                padding: 0 40px;
+            }
+        }
+
+        /* Logout button styling */
+        .btn-logout {
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 1px;
+        }
+
+        .btn-logout:hover {
+            background-color: #c82333;
+        }
+
+        .logout-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 10px;
+        }
+
+        /* Centered button for order management */
+        .order-button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>จัดการโต๊ะ (บริกร)</h1>
+        <!-- ปุ่ม Logout -->
+        <div class="logout-container">
+            <form th:action="@{/logout}" method="post">
+                <input type="submit" value="Logout" class="btn-logout"/>
+            </form>
+        </div>
+    </header>
+    <main>
+        <h2>รายการโต๊ะ</h2>
+        <div class="grid-container">
+            <div class="grid-item" th:each="table : ${tables}">
+                <h3>
+                    <!-- ใช้ th:href เพื่อสร้างลิงก์ไปยัง URL ที่ถูกต้อง -->
+                    <a class="button-56" th:href="@{/user/menu/table/{tableNumber}(tableNumber=${table.tableNumber})}" th:text="'โต๊ะ #' + ${table.tableNumber}">โต๊ะ #</a>
+                </h3>
+            </div>
+        </div>
+
+        <!-- ปุ่มไปยัง order/management -->
+        <div class="order-button-container">
+            <form th:action="@{/order/management}" method="get">
+                <input type="submit" value="จัดการการสั่งซื้อ" class="btn-logout"/>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

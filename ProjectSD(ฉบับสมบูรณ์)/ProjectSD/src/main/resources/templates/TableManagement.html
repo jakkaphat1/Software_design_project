@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>การจัดการโต๊ะ</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .table-selection {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .table-item {
+            width: 120px;
+            height: 120px;
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+            text-align: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .table-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .table-item.available {
+            background-color: #d4edda;
+        }
+
+        .table-item.occupied {
+            background-color: #f8d7da;
+        }
+
+        .btn-group {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <header class="bg-dark text-white text-center py-3">
+        <h1>การจัดการโต๊ะ</h1>
+    </header>
+
+    <main class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="text-center mt-4">เลือกโต๊ะที่ต้องการจัดการ</h2>
+            <a href="/order/management" class="btn btn-secondary mt-4">ย้อนกลับ</a>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/table/management/create" class="btn btn-primary">สร้างโต๊ะใหม่</a>
+        </div>
+
+        <div class="table-selection">
+            <div th:each="table : ${tables}" 
+                 th:classappend="${table.occupied ? 'occupied' : 'available'}"
+                 class="table-item">
+                <span th:text="'โต๊ะ ' + ${table.tableNumber}"></span>
+                
+                <!-- Buttons for view and delete -->
+                <div class="btn-group">
+                    <!-- Link to view table orders -->
+                    <a th:href="@{/table/orders/{tableNumber}(tableNumber=${table.tableNumber})}" class="btn btn-info btn-sm">View</a>
+
+                    <!-- Delete Button -->
+                    <form th:action="@{/table/delete/{id}(id=${table.tableId})}" method="post" style="display:inline;">
+                        <!-- Add CSRF Token -->
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-light text-center py-3 mt-4">
+        <p>&copy; 2024 ร้านอาหารของเรา</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

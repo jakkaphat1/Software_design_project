@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่มอาหารใหม่ (Admin)</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        nav a {
+            color: #ffffff;
+            font-size: 16px;
+        }
+        h2 {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        label {
+            font-weight: bold;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>เพิ่มอาหารใหม่ (Admin)</h1>
+        <nav>
+            <a href="/admin/menu">กลับไปที่รายการอาหาร</a>
+        </nav>
+    </header>
+
+    <main class="container mt-4">
+        <h2>กรอกข้อมูลอาหารใหม่</h2>
+        <form th:action="@{/admin/menu/add}" method="post" class="mt-4">
+            <div class="form-group">
+                <label for="name">ชื่ออาหาร:</label> 
+                <input type="text" class="form-control" id="name" name="name" required />
+            </div>
+            <div class="form-group">
+                <label for="description">รายละเอียด:</label> 
+                <input type="text" class="form-control" id="description" name="description" required />
+            </div>
+            <div class="form-group">
+                <label for="price">ราคา:</label> 
+                <input type="number" class="form-control" id="price" name="price" step="0.01" required />
+            </div>
+            <div class="form-group">
+                <label for="category">หมวดหมู่:</label> 
+                <select id="category" name="category" class="form-control" required>
+                    <option value="fried">ของผัด</option>
+                    <option value="deep-fried">ของทอด</option>
+                    <option value="boiled">ของต้ม</option>
+                    <!-- เพิ่มหมวดหมู่อื่นๆ ที่ต้องการ -->
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">เพิ่มอาหาร</button>
+        </form>
+        <!-- Back button -->
+        <a href="/admin/menu" class="btn btn-secondary btn-block mt-3">กลับไปที่รายการอาหาร</a>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 ร้านอาหารของเรา</p>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

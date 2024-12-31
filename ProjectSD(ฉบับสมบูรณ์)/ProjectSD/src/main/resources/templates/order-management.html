@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>การจัดการคำสั่งซื้อ (บริกร)</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+.action-buttons {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 20px;
+}
+
+.action-buttons .btn {
+	margin-left: 10px;
+}
+</style>
+</head>
+<body>
+	<header class="bg-primary text-white text-center py-3">
+		<h1>การจัดการคำสั่งซื้อ (บริกร)</h1>
+	</header>
+
+	<main class="container mt-4">
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h2 class="mb-0">รายการคำสั่งซื้อ</h2>
+			<div class="action-buttons">
+				<a href="/user-page" class="btn btn-info">จัดการโต๊ะ</a>
+			</div>
+		</div>
+
+		<table class="table table-striped">
+			<thead class="thead-dark">
+				<tr>
+					<th>หมายเลขคำสั่งซื้อ</th>
+					<th>หมายเลขโต๊ะ</th>
+					<th>รายการอาหาร</th>
+					<th>วันที่สั่ง</th>
+					<th>วันที่เสิร์ฟ</th>
+					<th>สถานะ</th>
+					<th>การดำเนินการ</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="order : ${orders}">
+					<td th:text="${order.orderId}">หมายเลขคำสั่งซื้อ</td>
+					<td th:text="${order.tableNumber}">หมายเลขโต๊ะ</td>
+					<td>
+						<ul>
+							<li th:each="item : ${order.orderItems}"
+								th:text="${item.menu.name} + ' x ' + ${item.quantity}">รายการอาหาร</li>
+						</ul>
+					</td>
+					<td
+						th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}">วันที่สั่ง</td>
+					<td
+						th:text="${#temporals.format(order.pickupDate, 'dd/MM/yyyy HH:mm')}">วันที่เสิร์ฟ</td>
+					<td th:text="${order.status}">สถานะ</td>
+					<td>
+						<!-- Buttons to update the status directly -->
+						<!--<form th:action="@{/order/updateStatus/{id}(id=${order.orderId})}"
+							method="post" style="display: inline;">
+							<input type="hidden" name="status" value="Confirmed" />
+							<button type="submit" class="btn btn-success btn-sm"
+								th:disabled="${order.status != 'Pending'}">ยืนยัน</button>
+						</form>-->
+						<form th:action="@{/order/updateStatus/{id}(id=${order.orderId})}"
+							method="post" style="display: inline;">
+							<input type="hidden" name="status" value="Denied" />
+							<button type="submit" class="btn btn-danger btn-sm">ปฏิเสธ</button>
+						</form>
+						<form th:action="@{/order/updateStatus/{id}(id=${order.orderId})}"
+							method="post" style="display: inline;">
+							<input type="hidden" name="status" value="Served" />
+							<button type="submit" class="btn btn-info btn-sm"
+								th:disabled="${order.status != 'Completed'}">เสิร์ฟ</button>
+						</form>
+						<form th:action="@{/order/delete/{id}(id=${order.orderId})}"
+							method="post" style="display: inline;">
+							<button type="submit" class="btn btn-danger btn-sm"
+								th:disabled="${order.status != 'Denied' && order.status != 'Served'}">ลบ</button>
+						</form>
+						<form
+							th:action="@{/order/clearByTableNumber/{tableNumber}(tableNumber=${order.tableNumber})}"
+							method="post" style="display: inline;">
+							<button type="submit" class="btn btn-danger btn-sm">ลบคำสั่งซื้อทั้งหมดของโต๊ะนี้</button>
+						</form>
+					</td>
+
+				</tr>
+				<tr th:if="${#lists.isEmpty(orders)}">
+					<td colspan="7" class="text-center">ไม่มีคำสั่งซื้อในขณะนี้</td>
+				</tr>
+			</tbody>
+		</table>
+	</main>
+
+	<footer class="bg-light text-center py-3"> </footer>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

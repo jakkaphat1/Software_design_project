@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>เมนูอาหาร</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<style>
+.category-title {
+	cursor: pointer;
+	background-color: #f8f9fa;
+	padding: 10px;
+	margin-bottom: 5px;
+	font-weight: bold;
+	color: #007bff;
+	font-size: 1rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.category-content {
+	display: none;
+	margin-top: 10px;
+}
+
+.food-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.card-body {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 100%;
+	font-size: 0.875rem;
+}
+
+.quantity-controls {
+	display: inline-flex;
+	align-items: center;
+	margin-left: auto;
+}
+
+.quantity-controls button {
+	width: 30px;
+	height: 30px;
+	padding: 0;
+}
+
+.quantity-controls span {
+	width: 18px;
+	text-align: center;
+	margin: 0 5px;
+	display: inline-block;
+}
+
+.btn-add-to-cart {
+	margin-left: 10px;
+}
+
+.cart-button {
+	position: relative; /* ใช้ fixed เพื่อให้ปุ่มติดอยู่กับหน้าจอ */
+	bottom: 20px; /* ให้ปุ่มอยู่ใกล้กับด้านล่างของหน้าจอ */
+	left: 45%; /* ปรับให้อยู่ตรงกลาง */
+	transform: translateX(-50%); /* เลื่อนปุ่มให้อยู่ตรงกลางจริงๆ */
+	z-index: 1000;
+	padding: 15px 30px; /* เพิ่ม padding เพื่อให้ปุ่มใหญ่ขึ้น */
+	font-size: 20px; /* ขยายขนาดตัวอักษร */
+	width: 50px; /* กำหนดให้ปุ่มมีความกว้างอัตโนมัติตามเนื้อหา */
+	white-space: nowrap;
+}
+
+.fixed-top-bar {
+	position: sticky;
+	top: 0;
+	width: 100%;
+	z-index: 999;
+	background-color: white;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.table-number {
+	font-weight: bold;
+	font-size: 1.2rem;
+	margin-left: 10px;
+}
+
+.container-with-padding {
+	padding-top: 20px;
+}
+</style>
+</head>
+<body>
+	<!-- แถบเมนูเลื่อนตามด้านบน -->
+	<header class="fixed-top-bar">
+		<div class="container">
+			<ul class="nav nav-tabs" id="menuTabs" role="tablist">
+				<li class="nav-item"><a class="nav-link active" id="menu-tab"
+					data-toggle="tab" href="#menu" role="tab" aria-controls="menu"
+					aria-selected="true">สั่งอาหาร</a></li>
+				<li class="nav-item"><a class="nav-link" id="order-history-tab"
+					data-toggle="tab" href="#order-history" role="tab"
+					aria-controls="order-history" aria-selected="false">ประวัติการสั่งอาหาร</a>
+				</li>
+				<li class="nav-item ml-auto d-flex align-items-center"><span
+					class="table-number">โต๊ะ: <span th:text="${tableNumber}"></span></span>
+					<a href="/user-page" class="btn btn-secondary ml-3">กลับไปที่หน้าแรก</a>
+				</li>
+			</ul>
+		</div>
+	</header>
+
+
+	<!-- เนื้อหาหลัก -->
+	<main class="container container-with-padding mt-4">
+		<div class="tab-content" id="menuTabsContent">
+			<!-- ส่วนของการสั่งอาหาร -->
+			<div class="tab-pane fade show active" id="menu" role="tabpanel"
+				aria-labelledby="menu-tab">
+				<!-- หมวดหมู่ของผัด -->
+				<div class="category mb-4">
+					<h3 class="category-title bg-light p-3"
+						onclick="toggleCategory('friedCategory', this)">
+						อาหารผัด <i class="fas fa-chevron-down"></i>
+					</h3>
+					<div id="friedCategory" class="category-content">
+						<div class="row">
+							<div th:each="menu : ${menus}"
+								th:if="${menu.category == 'fried'}"
+								class="col-sm-12 col-md-6 col-lg-4 mb-4 food-item">
+								<div class="card h-100">
+									<div class="card-body">
+										<div class="d-flex justify-content-between">
+											<h5 class="card-title" th:text="${menu.name}">ชื่ออาหาร</h5>
+											<div class="quantity-controls">
+												<button class="btn btn-outline-secondary" type="button"
+													th:onclick="'decreaseQuantity(this, ' + ${menu.menuId} + ')'">-</button>
+												<span th:id="'quantity-' + ${menu.menuId}">1</span>
+												<button class="btn btn-outline-secondary" type="button"
+													th:onclick="'increaseQuantity(this, ' + ${menu.menuId} + ')'">+</button>
+											</div>
+										</div>
+										<p class="card-text" th:text="${menu.description}">รายละเอียด</p>
+										<div class="d-flex justify-content-between align-items-center">
+											<p class="card-text">
+												<strong>ราคา:</strong> <span th:text="${menu.price}">ราคา</span>
+												บาท
+											</p>
+											<form th:action="@{/cart/add}" method="post">
+												<input type="hidden" name="menuId" th:value="${menu.menuId}">
+												<input type="hidden" name="tableNumber"
+													th:value="${tableNumber}"> <input type="hidden"
+													th:id="'formQuantity-' + ${menu.menuId}" name="quantity"
+													value="1">
+												<button type="submit"
+													class="btn btn-primary btn-add-to-cart">เพิ่มลงในตะกร้า</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- หมวดหมู่ของทอด -->
+				<div class="category mb-4">
+					<h3 class="category-title bg-light p-3"
+						onclick="toggleCategory('deepFriedCategory', this)">
+						อาหารทอด <i class="fas fa-chevron-down"></i>
+					</h3>
+					<div id="deepFriedCategory" class="category-content">
+						<div class="row">
+							<div th:each="menu : ${menus}"
+								th:if="${menu.category == 'deep-fried'}"
+								class="col-sm-12 col-md-6 col-lg-4 mb-4 food-item">
+								<div class="card h-100">
+									<div class="card-body">
+										<div class="d-flex justify-content-between">
+											<h5 class="card-title" th:text="${menu.name}">ชื่ออาหาร</h5>
+											<div class="quantity-controls">
+												<button class="btn btn-outline-secondary" type="button"
+													th:onclick="'decreaseQuantity(this, ' + ${menu.menuId} + ')'">-</button>
+												<span th:id="'quantity-' + ${menu.menuId}">1</span>
+												<button class="btn btn-outline-secondary" type="button"
+													th:onclick="'increaseQuantity(this, ' + ${menu.menuId} + ')'">+</button>
+
+											</div>
+										</div>
+										<p class="card-text" th:text="${menu.description}">รายละเอียด</p>
+										<div class="d-flex justify-content-between align-items-center">
+											<p class="card-text">
+												<strong>ราคา:</strong> <span th:text="${menu.price}">ราคา</span>
+												บาท
+											</p>
+											<form th:action="@{/cart/add}" method="post">
+												<input type="hidden" name="menuId" th:value="${menu.menuId}">
+												<input type="hidden" name="tableNumber"
+													th:value="${tableNumber}"> <input type="hidden"
+													th:id="'formQuantity-' + ${menu.menuId}" name="quantity"
+													value="1">
+												<button type="submit"
+													class="btn btn-primary btn-add-to-cart">เพิ่มลงในตะกร้า</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- หมวดหมู่ของต้ม -->
+				<div class="category mb-4">
+					<h3 class="category-title bg-light p-3"
+						onclick="toggleCategory('boiledCategory', this)">
+						อาหารต้ม <i class="fas fa-chevron-down"></i>
+					</h3>
+					<div id="boiledCategory" class="category-content">
+						<div class="row">
+							<div th:each="menu : ${menus}"
+								th:if="${menu.category == 'boiled'}"
+								class="col-sm-12 col-md-6 col-lg-4 mb-4 food-item">
+								<div class="card h-100">
+									<div class="card-body">
+										<div class="d-flex justify-content-between">
+											<h5 class="card-title" th:text="${menu.name}">ชื่ออาหาร</h5>
+											<div class="quantity-controls">
+												<button class="btn btn-outline-secondary" type="button"
+													th:onclick="'decreaseQuantity(this, ' + ${menu.menuId} + ')'">-</button>
+												<span th:id="'quantity-' + ${menu.menuId}">1</span>
+												<button class="btn btn-outline-secondary" type="button"
+													th:onclick="'increaseQuantity(this, ' + ${menu.menuId} + ')'">+</button>
+
+											</div>
+										</div>
+										<p class="card-text" th:text="${menu.description}">รายละเอียด</p>
+										<div class="d-flex justify-content-between align-items-center">
+											<p class="card-text">
+												<strong>ราคา:</strong> <span th:text="${menu.price}">ราคา</span>
+												บาท
+											</p>
+											<form th:action="@{/cart/add}" method="post">
+												<input type="hidden" name="menuId" th:value="${menu.menuId}">
+												<input type="hidden" name="tableNumber"
+													th:value="${tableNumber}"> <input type="hidden"
+													th:id="'formQuantity-' + ${menu.menuId}" name="quantity"
+													value="1">
+												<button type="submit"
+													class="btn btn-primary btn-add-to-cart">เพิ่มลงในตะกร้า</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- ปุ่มไปยังตะกร้าสินค้า -->
+				<div class="cart-button">
+					<a href="/cart/view" class="btn btn-success">ดูตะกร้าสินค้า</a>
+				</div>
+			</div>
+
+			<!-- ส่วนของประวัติการสั่งอาหาร -->
+			<div class="tab-pane fade" id="order-history" role="tabpanel"
+				aria-labelledby="order-history-tab">
+				<h3 class="mt-4">ประวัติการสั่งอาหาร</h3>
+
+				<div th:if="${orders != null}">
+					<table class="table table-striped mt-3">
+						<thead>
+							<tr>
+								<th>ชื่ออาหาร</th>
+								<th>สถานะ</th>
+								<th>เวลาที่สั่ง</th>
+								<th>เวลาที่เสิร์ฟ</th>
+								<th>ราคา</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- วนลูป Order -->
+							<tr th:each="order : ${orders}">
+								<td>
+									<ul>
+										<!-- แสดงรายการอาหารแต่ละรายการ -->
+										<li th:each="item : ${order.orderItems}"
+											th:text="${item.menu.name} + ' x ' + ${item.quantity}">รายการอาหาร</li>
+									</ul>
+								</td>
+								<td th:text="${order.status}">สถานะ</td>
+								<td
+									th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}">เวลาที่สั่ง</td>
+								<td
+									th:text="${#temporals.format(order.pickupDate, 'dd/MM/yyyy HH:mm')}">เวลาที่เสิร์ฟ</td>
+								<td th:text="${order.totalAmount}">ราคา</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="5" class="text-right"><strong>ราคารวมทั้งหมด:</strong></td>
+								<td th:text="${totalAmount}">ราคา</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+
+
+			</div>
+	</main>
+
+
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+	<script>
+		function toggleCategory(categoryId, element) {
+			var categoryContent = document.getElementById(categoryId);
+			var icon = element.querySelector('i');
+
+			if (categoryContent.style.display === "none"
+					|| categoryContent.style.display === "") {
+				categoryContent.style.display = "block";
+				icon.classList.remove('fa-chevron-down');
+				icon.classList.add('fa-chevron-up');
+			} else {
+				categoryContent.style.display = "none";
+				icon.classList.remove('fa-chevron-up');
+				icon.classList.add('fa-chevron-down');
+			}
+
+			adjustCartButtonPosition();
+		}
+
+		function adjustCartButtonPosition() {
+			var cartButton = document.querySelector('.cart-button');
+			var lastCategory = document.querySelector('.category:last-child');
+
+			// คำนวณระยะห่างจากด้านบนของหน้าเพื่อให้ปุ่มตะกร้าอยู่ด้านล่างสุด
+			var lastCategoryBottom = lastCategory.getBoundingClientRect().bottom
+					+ window.scrollY;
+			cartButton.style.top = (lastCategoryBottom + 20) + 'px'; // +20px เพื่อเว้นระยะห่าง
+		}
+
+		function increaseQuantity(button, menuId) {
+			console.log("Increase button clicked for menuId: " + menuId); // ตรวจสอบว่าฟังก์ชันถูกเรียกหรือไม่
+			var quantitySpan = document.getElementById('quantity-' + menuId);
+			var quantity = parseInt(quantitySpan.textContent);
+			quantity++;
+			quantitySpan.textContent = quantity;
+			document.getElementById("formQuantity-" + menuId).value = quantity;
+		}
+
+		function decreaseQuantity(button, menuId) {
+			console.log("Decrease button clicked for menuId: " + menuId); // ตรวจสอบว่าฟังก์ชันถูกเรียกหรือไม่
+			var quantitySpan = document.getElementById('quantity-' + menuId);
+			var quantity = parseInt(quantitySpan.textContent);
+			if (quantity > 1) {
+				quantity--;
+				quantitySpan.textContent = quantity;
+				document.getElementById("formQuantity-" + menuId).value = quantity;
+			}
+		}
+	</script>
+</body>
+</html>

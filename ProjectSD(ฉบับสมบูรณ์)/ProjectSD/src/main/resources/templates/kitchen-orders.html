@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>คำสั่งซื้อในห้องครัว</title>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+	<header class="bg-dark text-white text-center py-3">
+		<h1>คำสั่งซื้อในห้องครัว</h1>
+		<form th:action="@{/logout}" method="post" class="d-inline-block">
+			<button type="submit" class="btn btn-light">Logout</button>
+		</form>
+	</header>
+
+	<main class="container mt-4">
+		<h2 class="text-center">รายการคำสั่งซื้อ</h2>
+		<div class="table-responsive">
+			<table class="table table-striped table-bordered">
+				<thead class="thead-dark">
+					<tr>
+						<th>หมายเลขคำสั่งซื้อ</th>
+						<th>โต๊ะ</th>
+						<th>สถานะ</th>
+						<th>รายการอาหาร</th>
+						<th>การดำเนินการ</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="order : ${orders}">
+						<td th:text="${order.orderId}">หมายเลขคำสั่งซื้อ</td>
+						<td th:text="${order.tableNumber}">โต๊ะ</td>
+						<td><span th:text="${order.status}"
+							th:classappend="${order.status == 'Cooking' ? 'badge badge-warning' : (order.status == 'Completed' ? 'badge badge-success' : 'badge badge-secondary')}">
+								สถานะ </span></td>
+						<td>
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>ชื่ออาหาร</th>
+										<th>จำนวน</th>
+										<th>การดำเนินการ</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="item : ${order.orderItems}">
+										<td th:text="${item.menu.name}">ชื่ออาหาร</td>
+										<td th:text="${item.quantity}">จำนวน</td>
+										<td>
+											 <!-- Delete food item button -->
+											<form
+												th:action="@{/kitchen/order/item/delete/{orderItemId}(orderItemId=${item.orderItemId})}"
+												method="post">
+												<button type="submit" class="btn btn-danger btn-sm">ลบ</button>
+											</form>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+						<td>
+							<!-- Existing action buttons for the whole order -->
+							<form
+								th:action="@{/kitchen/orders/start/{orderId}(orderId=${order.orderId})}"
+								method="post" class="mb-2">
+								<button type="submit" class="btn btn-primary btn-sm"
+									th:disabled="${order.status == 'Cooking' || order.status == 'Served' || order.status == 'Completed' || order.status == 'Denied'}">
+									เริ่มทำ</button>
+							</form>
+							<form
+								th:action="@{/kitchen/orders/complete/{orderId}(orderId=${order.orderId})}"
+								method="post">
+								<button type="submit" class="btn btn-success btn-sm"
+									th:disabled="${order.status == 'Completed' || order.status == 'Served' || order.status == 'Denied'}">เสร็จสิ้น</button>
+							</form>
+						</td>
+					</tr>
+				</tbody>
+
+			</table>
+		</div>
+	</main>
+
+	<footer class="bg-light text-center py-3 mt-4">
+	</footer>
+
+	<!-- Bootstrap JS and dependencies -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

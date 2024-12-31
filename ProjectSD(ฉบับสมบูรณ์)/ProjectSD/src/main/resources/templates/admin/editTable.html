@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แก้ไขโต๊ะ (Admin)</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #343a40;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .message {
+            background-color: #e2e3e5;
+            color: #856404;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .btn-custom {
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+        }
+        .btn-custom:hover {
+            background-color: #218838;
+        }
+        .btn-secondary {
+            margin-top: 1rem;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>แก้ไขโต๊ะ (Admin)</h2>
+        <form th:action="@{/admin/tables/edit/{id}(id=${tableCustomer.id})}" method="post">
+            <div class="form-group">
+                <label for="tableNumber">หมายเลขโต๊ะ:</label>
+                <input type="text" id="tableNumber" name="tableNumber" th:value="${tableCustomer.tableNumber}" placeholder="Enter table number" class="form-control" required>
+            </div>
+
+            <input type="submit" value="บันทึกการแก้ไข" class="btn btn-custom">
+            <a href="/admin/tables" class="btn btn-secondary">กลับไปยังหน้าจัดการโต๊ะ</a>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
